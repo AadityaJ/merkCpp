@@ -1,23 +1,26 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+template <typename T>
 class merkelTree{
-    std::vector<int> treeH;
+    std::vector<T> treeH;
     int size;
 public:
-    typedef int (*hash_)(int,int);
+    typedef int (*hash_)(T,T);
     hash_ myhash;
-    merkelTree(int sz,int hashF(int,int)){
+    merkelTree(int sz,T hashF(T,T)){
         this->myhash=hashF;
         this->size=sz;
-        this->treeH=std::vector<int>((sz*2));
+        this->treeH=std::vector<T>((sz*2));
         for(int i=1;i<(sz*2);i++) treeH[i]=1;
     }
-    void createTree(std::vector<int> &data);
+    void createTree(std::vector<T> &data);
     void printData();
     void printTree();
+    bool checkEq(const merkelTree<T> &mT);
 };
-void merkelTree::createTree(vector<int> &data){
+template <typename T>
+void merkelTree<T>::createTree(vector<T> &data){
     int j=0;
     for(int i=data.size();j!=data.size();i++,j++){
         treeH[i]=data[j];
@@ -26,10 +29,27 @@ void merkelTree::createTree(vector<int> &data){
         treeH[i]=this->myhash(treeH[i*2],treeH[(i*2)+1]);
     }
 }
-void merkelTree::printData(){
+template <typename T>
+void merkelTree<T>::printData(){
     for(int i=1;i<(2*this->size);i++) cout<<treeH[i]<<" ";
 }
-void merkelTree::printTree(){
-    // overall number of nodes is 2*size-1
-    
+template <typename T>
+void merkelTree<T>::printTree(){
+    // bfs strategy for printing. O(n).
+        int x=1,mult=1;
+        while(x!=(2*this->size)){
+            int sz=mult;
+            mult*=2;
+            for(int i=0;i<sz && x!=(2*this->size);i++,x++){
+                cout<<treeH[x]<<' ';
+            }
+            cout<<endl;
+        }
+}
+template <typename T>
+bool merkelTree<T>::checkEq(const merkelTree<T> &mT){
+    if(this->size!=mT.size){
+        return 0;
+    }
+    return this->treeH[1]==mT.treeH[1];
 }

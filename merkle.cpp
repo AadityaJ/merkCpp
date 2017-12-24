@@ -1,9 +1,6 @@
-/*
-TODO:
-2) Diagnose inequalities
-*/
 #include <iostream>
 #include <vector>
+#include <utility>
 #include "merkle.h"
 using namespace std;
 int hashFi(int a,int b){return a+b;}
@@ -49,11 +46,32 @@ void test3(){
     mt3.createTree(v);
     cout<<mt1.checkEq(mt3)<<endl;
 }
+void test4(){
+    cout<<"*************************Test 4*************************\n";
+    std::vector<int> v1,v2;
+    v1.push_back(10);
+    v1.push_back(20);
+    v1.push_back(30);
+    v1.push_back(40);
+    v1.push_back(50);
+    v2.push_back(10);
+    v2.push_back(20);
+    v2.push_back(30);
+    v2.push_back(40);
+    v2.push_back(51);
+    merkelTree<int>mt1(v1.size(),hashFi);
+    mt1.createTree(v1);
+    merkelTree<int>mt2(v2.size(),hashFi);
+    mt2.createTree(v2);
+    pair<int,int> pAns=mt1.issueRes(mt2);
+    cout<<pAns.first<<" "<<pAns.second<<endl;
+}
 void init(){
     cout<<"Build done. Starting tests.\n";
     test1();
     test2();
     test3();
+    test4();
 }
 int main(int argc, char const *argv[]) {
     init();

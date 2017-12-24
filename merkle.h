@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <utility>
 using namespace std;
 template <typename T>
 class merkelTree{
@@ -18,6 +19,7 @@ public:
     void printData();
     void printTree();
     bool checkEq(const merkelTree<T> &mT);
+    pair<int,T> issueRes(const merkelTree<T> &mT);
 };
 template <typename T>
 void merkelTree<T>::createTree(vector<T> &data){
@@ -54,4 +56,19 @@ bool merkelTree<T>::checkEq(const merkelTree<T> &mT){
         return 0;
     }
     return this->treeH[1]==mT.treeH[1];
+}
+template <typename T>
+pair<int,T> merkelTree<T>::issueRes(const merkelTree<T> &mT){
+    if(this->checkEq(mT)){
+        return make_pair(-1,NULL);
+    }
+    int currIndex=1;
+    while(currIndex<(2*this->size)){
+        if(this->treeH[currIndex]!=mT.treeH[currIndex]){
+        }else if(this->treeH[currIndex+1]!=mT.treeH[currIndex]){
+            currIndex++;
+        }
+        currIndex*=2;
+    }
+    return make_pair(currIndex/2,treeH[(currIndex)/2]);
 }

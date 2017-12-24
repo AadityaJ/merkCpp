@@ -6,7 +6,7 @@ class merkelTree{
     std::vector<T> treeH;
     int size;
 public:
-    typedef int (*hash_)(T,T);
+    typedef T (*hash_)(T,T);
     hash_ myhash;
     merkelTree(int sz,T hashF(T,T)){
         this->myhash=hashF;
@@ -32,10 +32,11 @@ void merkelTree<T>::createTree(vector<T> &data){
 template <typename T>
 void merkelTree<T>::printData(){
     for(int i=1;i<(2*this->size);i++) cout<<treeH[i]<<" ";
+    cout<<endl;
 }
 template <typename T>
 void merkelTree<T>::printTree(){
-    // bfs strategy for printing. O(n).
+    // BFS strategy for printing. O(n).
         int x=1,mult=1;
         while(x!=(2*this->size)){
             int sz=mult;
@@ -45,6 +46,7 @@ void merkelTree<T>::printTree(){
             }
             cout<<endl;
         }
+        cout<<endl;
 }
 template <typename T>
 bool merkelTree<T>::checkEq(const merkelTree<T> &mT){

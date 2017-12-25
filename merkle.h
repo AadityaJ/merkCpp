@@ -1,3 +1,6 @@
+/*
+TODO: 1) Add more advance maths operations (=,+)
+*/
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -8,8 +11,18 @@ class merkelTree{
     int size;
 public:
     typedef T (*hash_)(T,T);
+    typedef T (*bhash_)(T);
     hash_ myhash;
+    bhash_ basehash;
+    merkelTree(int sz,T hashF(T,T), T bhashF(T)){
+        this->basehash=bhashF;
+        this->myhash=hashF;
+        this->size=sz;
+        this->treeH=std::vector<T>((sz*2));
+        for(int i=1;i<(sz*2);i++) treeH[i]=1;
+    }
     merkelTree(int sz,T hashF(T,T)){
+        this->basehash=NULL;
         this->myhash=hashF;
         this->size=sz;
         this->treeH=std::vector<T>((sz*2));
@@ -20,12 +33,20 @@ public:
     void printTree();
     bool checkEq(const merkelTree<T> &mT);
     pair<int,T> issueRes(const merkelTree<T> &mT);
+    bool checkHashF(const merkelTree<T> &mT);
+    bool operator==(const merkelTree<T> &mT);
 };
 template <typename T>
 void merkelTree<T>::createTree(vector<T> &data){
     int j=0;
-    for(int i=data.size();j!=data.size();i++,j++){
-        treeH[i]=data[j];
+    if(this->basehash){
+        for(int i=data.size();j!=data.size();i++,j++){
+            treeH[i]=this->basehash(data[j]);
+        }
+    }else{
+        for(int i=data.size();j!=data.size();i++,j++){
+            treeH[i]=data[j];
+        }
     }
     for(int i=data.size()-1;i>=1;i--){
         treeH[i]=this->myhash(treeH[i*2],treeH[(i*2)+1]);
@@ -71,4 +92,12 @@ pair<int,T> merkelTree<T>::issueRes(const merkelTree<T> &mT){
         currIndex*=2;
     }
     return make_pair(currIndex/2,treeH[(currIndex)/2]);
+}
+template <typename T>
+bool merkelTree<T>::checkHashF(const merkelTree<T> &mT){
+    return this->myhash==mT.myhash;
+}
+template <typename T>
+bool merkelTree<T>::operator==(const merkelTree<T> &mT){
+    return this->checkEq(mT);
 }
